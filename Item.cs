@@ -11,7 +11,7 @@ public class Item
     public string Format { get; set; } = "";
     public string Collection { get; set; } = "";
     public bool IsCheckedOut { get; set; } = false;
-    public bool IsLost { get; private set; } = false;
+    public bool IsLost { get; set; } = false;
     public double FineAmount { get; private set; }
     public int CurrentBorrower { get; set; }
 
@@ -21,30 +21,23 @@ public class Item
         s_nextItemNumber = random.Next(000001, 1000000);
     }
 
-    public Item(string title, string author, string format, string collection, double fineAmount = 15.00)
+    public Item(string title, string author, string format, string collection, double fineAmount = 15.00, bool isLost = false)
     {
         Title = title;
         Author = author;
         Format = format;
         Collection = collection;
+        IsLost = isLost;
         FineAmount = fineAmount;
         ItemNumber = s_nextItemNumber++;
     }
 
-    public string DisplayBookInfo()
+    public void DisplayBookInfo()
     {
-        return $"\nTitle: {Title}\nAuthor: {Author}\nItem Number: {ItemNumber}\nFormat: {Format}\nCollection: {Collection}\nChecked Out: {IsCheckedOut}";
+        Console.WriteLine("\n--- ITEM INFO ---");
+        Console.WriteLine($"Title: {Title}\nAuthor: {Author}\nItem Number: {ItemNumber}\nFormat: {Format}\nCollection: {Collection}");
+        Console.WriteLine($"STATUS: {(IsLost ? "LOST" : IsCheckedOut ? "CHECKED OUT" : "AVAILABLE")}");
     }
 
-    public void MarkAsLost(Patron patron)
-    {
-        Console.WriteLine($"\nThe item '{Title}' has been marked as 'LOST'. A fine of ${FineAmount} has been charged to Patron #{patron.PatronNumber}.");
-        patron.ApplyCharge(FineAmount);
-        IsLost = true;
-    }
 
-    public void CheckedOutTo(Item item, Patron patron)
-    {
-        item.CurrentBorrower = patron.PatronNumber;
-    }
 }
